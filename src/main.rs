@@ -180,14 +180,20 @@ fn snake_color(v: u16, style: &SnakeStyle, frame: u64) -> Color {
         }
         SnakeStyle::Gradient(stops) => {
             let total_cells = (FIELD_LINES * FIELD_COLS) as f32;
-            let segments = stops.len() - 1;
-            let total_virtual_segments = segments as f32 * GRADIENT_LOOPS;
+            // Treat the stops as a closed loop (last stop blends back into the
+            // first) so repeated loops down the body flow smoothly instead of
+            // cutting straight from the end color back to the start color.
+            let segments = stops.len();
+            let total_virtual_segments = segments as f32 * GRADIENT_LOOPS - 1.0;
             let pos = (v as f32 / total_cells).clamp(0.0, 1.0) * total_virtual_segments;
             let idx_global = (pos.floor() as usize).min(total_virtual_segments as usize - 1);
             let local_t = pos - idx_global as f32;
             let idx = idx_global % segments;
+            let next_idx = (idx + 1) % segments;
 
-            stops[idx + 1].interpolate(stops[idx], local_t).to_crossterm()
+            stops[next_idx]
+                .interpolate(stops[idx], local_t)
+                .to_crossterm()
         }
         SnakeStyle::Rainbow => {
             let total_cells = (FIELD_LINES * FIELD_COLS) as f32;
