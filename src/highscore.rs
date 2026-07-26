@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+use crate::PROJECT_NAME;
+
 const MAX_ENTRIES: usize = 10;
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -15,7 +17,7 @@ pub struct HighScoreEntry {
 
 fn scores_dir() -> PathBuf {
     let mut dir = dirs::data_dir().unwrap_or_else(|| PathBuf::from("."));
-    dir.push("snake-tui");
+    dir.push(PROJECT_NAME);
     dir
 }
 
@@ -43,7 +45,12 @@ fn save_scores(scores: &[HighScoreEntry]) {
 /// or the score beats the current lowest entry.
 pub fn qualifies(score: u16) -> bool {
     let scores = load_scores();
-    scores.len() < MAX_ENTRIES || scores.iter().map(|s| s.score).min().is_some_and(|min| score > min)
+    scores.len() < MAX_ENTRIES
+        || scores
+            .iter()
+            .map(|s| s.score)
+            .min()
+            .is_some_and(|min| score > min)
 }
 
 pub fn add_score(entry: HighScoreEntry) -> Vec<HighScoreEntry> {

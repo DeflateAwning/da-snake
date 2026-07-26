@@ -1,5 +1,5 @@
 [package]
-name = "snake-tui"
+name = "da-snake"
 version = "0.2.2"
 edition = "2021"
 description = "A cross platform snake game running in the terminal"

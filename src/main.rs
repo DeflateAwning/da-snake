@@ -19,6 +19,7 @@ use crate::game::{Direction, Game, GameState, Tile, FIELD_COLS, FIELD_LINES};
 use crate::highscore::{add_score, load_scores, qualifies, HighScoreEntry};
 use crate::tui::{Renderer, Window};
 
+pub const PROJECT_NAME: &str = "da-snake";
 const MAX_NAME_LEN: usize = 8;
 const MAX_COLOR_LEN: usize = 7;
 const GRADIENT_LOOPS: f32 = 3.0;
@@ -30,7 +31,11 @@ enum PostGamePhase {
 }
 
 #[derive(Parser, Debug)]
-#[command(author, version, about = "A cross platform snake game running in the terminal")]
+#[command(
+    author,
+    version,
+    about = "A cross platform snake game running in the terminal"
+)]
 struct Args {
     /// Game refresh rate in Hz (ticks per second, higher means faster)
     #[arg(short = 'r', long, default_value_t = 10.0)]
